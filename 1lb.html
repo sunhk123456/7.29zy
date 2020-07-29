@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body,
+        ul,
+        li {
+            font-style: none;
+        }
+        
+        .wheel {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            border: 1px solid red;
+        }
+        
+        .scene {
+            width: 300px;
+            height: 300px;
+            perspective: 800px;
+        }
+        
+        .left {
+            position: absolute;
+            left: -40px;
+            height: 100%;
+            line-height: 300px;
+            top: 0;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .right {
+            position: absolute;
+            right: -40px;
+            height: 100%;
+            line-height: 300px;
+            top: 0;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .btns {
+            position: absolute;
+            left: 0;
+            bottom: -45px;
+            width: 100%;
+            height: 30px;
+            /* border: 1px solid red; */
+        }
+        
+        .btns li {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #666;
+            float: left;
+            color: #fff;
+            background: #aaa;
+            margin-left: 20px;
+            text-align: center;
+            line-height: 20px;
+            cursor: pointer;
+        }
+        
+        .box {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform-origin: center center -150px;
+            transform-style: preserve-3d;
+            transition: transform 2s ease;
+        }
+        
+        .box div {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 100px;
+            color: #111;
+            text-align: center;
+            line-height: 300px;
+        }
+        
+        .box div:nth-child(1) {
+            background-color: blue;
+            transform-origin: top;
+            transform: rotateX(-90deg);
+        }
+        
+        .box div:nth-child(2) {
+            background-color: green;
+            transform-origin: left;
+            transform: rotateY(90deg);
+        }
+        
+        .box div:nth-child(3) {
+            background-color: pink;
+            transform-origin: right;
+            transform: rotateY(-90deg);
+        }
+        
+        .box div:nth-child(4) {
+            background-color: yellow;
+            transform-origin: bottom;
+            transform: rotateX(90deg);
+        }
+        
+        .box div:nth-child(5) {
+            background-color: gray;
+            transform: translateZ(-300px)
+        }
+        
+        .box div:nth-child(6) {
+            background-color: red
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wheel">
+        <div class="scene">
+            <div class="box">
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+                <div>6</div>
+            </div>
+
+        </div>
+        <div class="left">
+            &lt;
+        </div>
+        <div class="right">
+            &gt;
+        </div>
+        <ul class="btns">
+            <li style="background: #000;">1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+    </div>
+    <script>
+        var wheel = document.querySelector(".wheel")
+        var box = document.querySelector(".box")
+        var left = document.querySelector(".left")
+        var right = document.querySelector(".right")
+        var btns = document.querySelectorAll(".btns li")
+        var angle = 90
+        var num = 0
+
+        function run() {
+            num++
+            box.style.cssText = " transform: rotateX(" + angle * num + "deg);"
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].style.cssText = "background:#777"
+            }
+            btns[num % 4].style.cssText = "background:#000"
+        }
+        var t = setInterval(run, 3000);
+        wheel.onmouseover = function() {
+            clearInterval(t)
+
+        }
+        wheel.onmouseout = function() {
+            t = setInterval(run, 3000);
+        }
+        left.onclick = function() {
+            num++
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].style.cssText = "background:#777"
+            }
+            if (num < 0) {
+                var current = -num
+            } else {
+                var current = num
+            }
+            btns[current % 4].style.cssText = "background:#000"
+            box.style.cssText = " transform: rotateX(" + angle * num + "deg);"
+        }
+        left.onclick = function() {
+            num--
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].style.cssText = "background:#777"
+            }
+            if (num < 0) {
+                var current = -num
+            } else {
+                var current = num
+            }
+            btns[current % 4].style.cssText = "background:#000"
+            box.style.cssText = " transform: rotateX(" + angle * num + "deg);"
+        }
+        for (let i = 0; i < btns.length; i++) {
+            btns[i].onclick = function() {
+                num = num - Math.abs(num % 4) + i
+                box.style.cssText = " transform: rotateX(" + angle * num + "deg);"
+                for (var j = 0; j < btns.length; j++) {
+                    btns[j].style.cssText = "background:#777"
+                }
+                this.style.cssText = "background:#000"
+            }
+        }
+        mosedir(box, function(x) {
+            // console.log(num)
+            box.style.transition = "none"
+            box.style.transform = "rotateX(" + (90 * num) + x + "deg)";
+            console.log(x)
+        }, function(x) {
+
+            console.log(x)
+            box.style.transition = "none"
+            box.style.transform = "rotateX(" + ((90 * num) - x) + "deg)";
+
+        }, function(x) {
+            box.style.transition = " transform  1s ease;"
+            console.log(x)
+            if (x > 40) {
+                num++
+            }
+
+            box.style.cssText = " transform: rotateX(" + 90 * num + "deg);"
+
+        }, function(x) {
+            box.style.transition = " transform  1s ease;"
+            if (x > 40) {
+                num--
+            }
+            box.style.cssText = " transform: rotateX(" + 90 * num + "deg);"
+            box.style.cssText = " transform: rotateX(" + 90 * num + "deg);"
+
+        })
+
+        function mosedir(obj, down, up, down1, up1) {
+            obj.onmousedown = function(ev) {
+                var starty = ev.clientY;
+                var movey;
+                document.onmousemove = function(ev) {
+                    movey = ev.clientY
+                    if (starty - movey > 0) {
+
+                        down(Math.abs(starty - movey));
+                    } else {
+                        up(Math.abs(starty - movey));
+                    }
+                }
+                document.onmouseup = function() {
+                        if (starty - movey > 0) {
+                            down1(Math.abs(starty - movey))
+                        } else {
+                            up1(Math.abs(starty - movey));
+                        }
+                        document.onmousemove = null;
+                        document.onmouseup = null;
+                    } //鼠标弹起
+                ev.preventDefault()
+            }
+
+        }
+        window.onblur = function() {
+            clearInterval(t)
+
+        }
+        window.onfocus = function() {
+            t = setInterval(run, 3000);
+        }
+    </script>
+</body>
+
+</html>

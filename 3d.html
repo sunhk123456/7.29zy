@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3d划桨式</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        text-align: center;
+    }
+    
+    .box {
+        width: 1000px;
+        height: 390px;
+        margin: 100px auto;
+        position: relative;
+    }
+    
+    .box li {
+        width: 1050px;
+        height: 360px;
+        list-style: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        display: none;
+    }
+    
+    .show {
+        width: 1050px;
+        height: 360px;
+        position: absolute;
+        left: 0px;
+        top: 0;
+        perspective: 1000px;
+    }
+    
+    .show div {
+        width: 525px;
+        height: 72px;
+        position: relative;
+        float: left;
+        transform-style: preserve-3d;
+    }
+    
+    .show em {
+        position: absolute;
+        left: 0px;
+        top: 0;
+        width: 525px;
+        height: 72px;
+    }
+    
+    .show .em1 {
+        background-image: url(./img/uek1.jpg);
+        transform: translate(5px);
+    }
+    
+    .show .em2 {
+        background-image: url(./img/uek2.jpg);
+        transform: translate(-5px);
+    }
+    
+    .show span {
+        position: absolute;
+        left: 0px;
+        top: 0;
+    }
+    
+    .span1 {
+        width: 10px;
+        height: 72px;
+    }
+    
+    .span2 {
+        width: 10px;
+        height: 72px;
+    }
+    
+    @keyframes move1 {
+        0% {
+            transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);
+            animation-timing-function: ease;
+        }
+        60% {
+            transform: rotateX(0deg) rotateZ(0deg) rotateY(-60deg);
+            animation-timing-function: ease;
+        }
+        80% {
+            transform: rotateX(90deg) rotateZ(-10deg) rotateY(-40deg);
+            animation-timing-function: ease;
+        }
+        100% {
+            transform: rotateX(180deg) rotateZ(0deg) rotateY(0deg);
+            animation-timing-function: ease;
+        }
+    }
+    
+    @keyframes move2 {
+        0% {
+            transform: rotateX(0deg) rotateZ(0deg) rotateY(0deg);
+            animation-timing-function: ease;
+        }
+        60% {
+            transform: rotateX(0deg) rotateZ(0deg) rotateY(60deg);
+            animation-timing-function: ease;
+        }
+        80% {
+            transform: rotateX(90deg) rotateZ(-10deg) rotateY(40deg);
+            animation-timing-function: ease;
+        }
+        100% {
+            transform: rotateX(180deg) rotateZ(0deg) rotateY(0deg);
+            animation-timing-function: ease;
+        }
+    }
+</style>
+
+<body>
+    <div class="box">
+        <img src="" alt="">
+        <ul>
+            <li> <img src="./img/uek1.jpg" alt="" class="img"></li>
+            <li> <img src="./img/uek2.jpg" alt="" class="img"></li>
+            <li> <img src="./img/uek3.jpg" alt="" class="img"></li>
+            <li> <img src="./img/uek4.jpg" alt="" class="img"></li>
+            <li> <img src="./img/uek5.jpg" alt="" class="img"></li>
+        </ul>
+        <div class="show">
+        </div>
+        <!-- 存储旋转的每个小木板 -->
+
+
+    </div>
+    <input type="button" name="" id="pre" class="pre" value="上一张">
+    <input type="button" name="" id="next" class="next" value="下一张">
+    <script>
+        var oShow = document.querySelector(".show")
+        var aimg = document.querySelectorAll(".img")
+        var pre = document.querySelector(".pre")
+        var next = document.querySelector(".next")
+            // 生成小木板
+        for (var i = 0; i < 5; i++) {
+            var div1 = document.createElement("div")
+            var div2 = document.createElement("div")
+            div1.innerHTML = "<em class='em1' style='background-position:0 -" + i * 72 + "px'></em><span class='span1'></span><em class='em2' style='background-position:0 -" + i * 72 + "px'></em><span  class='span2'></span>"
+            div2.innerHTML = "<em class='em1' style='background-position:-550px -" + i * 72 + "px'></em><span  class='span1'></span><em class='em2' style='background-position:-550px -" + i * 72 + "px'></em><span  class='span2'></span>"
+
+            oShow.appendChild(div1)
+            oShow.appendChild(div2)
+
+        }
+        // console.log(aimg)
+        console.log(pre)
+        oShow.urls = []
+            // console.log(oShow.urls.length)
+        for (var i = 0, l = aimg.length; i < l; i++) {
+
+            oShow.urls[oShow.urls.length] = (aimg[i].getAttribute("src"))
+        }
+        console.log(oShow.urls)
+        oShow.iNow = 0 //当前索引
+        var now = 0
+        next.onclick = function() {
+
+            var iNext = oShow.iNow + 1
+            if (iNext >= oShow.urls.length) {
+                iNext = 0
+            }
+            tab(iNext);
+
+
+        }
+        pre.onclick = function() {
+            var iNext = oShow.iNow - 1
+            tab(iNext);
+            if (iNext < 0) {
+                iNext = oShow.urls.length - 1
+            }
+        }
+
+        function tab(iNext) {
+            // 交换背景
+            var aEm1 = oShow.getElementsByClassName("em1")
+            console.log(aEm1)
+            var aEm2 = oShow.getElementsByClassName("em2")
+            var aDiv = oShow.getElementsByTagName("div")
+            var l = aEm1.length
+            for (var i = 0; i < l; i++) {
+                aEm1[i].style.backgroundImage = "url(" + oShow.urls[oShow.iNow] + ")"
+                aEm2[i].style.backgroundImage = "url(" + oShow.urls[iNext] + ")"
+            }
+            for (var i = 0; i < aDiv.length; i += 2) {
+                var time = (i + 1) * 50
+                setTimer(aDiv[i], time, 'move1')
+
+                setTimer(aDiv[i + 1], time, 'move2')
+            }
+            oShow.iNow = iNext
+
+        }
+
+        function setTimer(obj, time, name) {
+            console.log(name)
+            obj.timer = setTimeout(function() {
+                // 先清除再添加
+
+                obj.style.cssText = "  animation:" + name + " 1.5s ;"
+
+            }, time)
+        }
+    </script>
+</body>
+
+</html>
